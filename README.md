@@ -48,15 +48,11 @@
 ---
 
 ## 🌐 เทคโนโลยีที่ใช้  
-- **Frontend:** React.js, Tailwind CSS  
 - **Backend:** Node.js, Express.js  
 - **Database:** Firebase Cloud Storage  
 
 ---
 
-## 👨‍💻 ผู้พัฒนา  
-- [ชื่อผู้พัฒนา 1](https://github.com/username1)  
-- [ชื่อผู้พัฒนา 2](https://github.com/username2)  
 
 ---
 
@@ -66,17 +62,10 @@
 ---
 
 ## 💡 ข้อเสนอแนะและการสนับสนุน  
-หากคุณมีคำถามหรือข้อเสนอแนะ สามารถติดต่อเราได้ที่ [email@example.com](mailto:email@example.com) หรือสร้าง Issue ใน Repository นี้  
+หากคุณมีคำถามหรือข้อเสนอแนะ สามารถติดต่อเราได้ที่ สร้าง Issue ใน Repository นี้  
 
 ---
 
 ### 🎉 ขอบคุณที่สนใจโปรเจคของเรา! 🎉
 ```
 
-Citations:
-[1] https://pplx-res.cloudinary.com/image/upload/v1741929489/user_uploads/rBbuwOsrMcJPzXR/image.jpg
-[2] https://pplx-res.cloudinary.com/image/upload/v1741929488/user_uploads/kUlSmQRJNcekdeu/image.jpg
-[3] https://pplx-res.cloudinary.com/image/upload/v1741929491/user_uploads/eERoTUPoLbVJQxm/image.jpg
-
----
-Answer from Perplexity: pplx.ai/share
