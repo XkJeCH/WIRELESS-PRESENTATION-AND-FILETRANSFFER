@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1004514098764",
+    "firebase_url": "https://cloudwireless-9f89a-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cloudwireless-9f89a",
+    "storage_bucket": "cloudwireless-9f89a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004514098764:android:7caffdc4104a39a4a6fee9",
+        "android_client_info": {
+          "package_name": "com.khonkaen.wireless"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUG7cdPTag97poWguV5iesw03Rg63K9W0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

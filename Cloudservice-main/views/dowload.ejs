@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        .download-container {
+            background-color: #fff;
+            text-align: center;
+            padding: 50px 20px;
+            max-width: 600px;
+            margin: 50px auto;
+            border-radius: 8px;
+        }
+
+        .download-container h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .download-container p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .containerbutton{
+            background-color: #fff;
+            text-align: center;
+            padding: 50px 20px;
+            max-width: 600px;
+            margin: 50px auto;
+            border-radius: 8px;
+        }
+
+        .app-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .app-button {
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            border: none;
+            
+        }
+
+        .app-button:hover {
+            background-color: #0056b3;
+        }
+
+        .app-button img {
+            height: 40px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 5px;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .data-container {
+    background-color: #fff;
+    padding: 4rem; 
+    max-width: 1000px;
+    margin:auto;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; 
+    justify-content: center;
+    align-items: center;
+
+}
+.data-container .link-container{
+    align-items: start;
+    width: 850px;
+}
+
+
+.data-container img {
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    object-fit: contain;
+    margin: auto;
+}
+
+        .view-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px; /* ปรับขอบซ้าย */
+            align-items: end;
+        }
+
+        .view-button:hover {
+            background-color: #0056b3;
+        }
+
+        .link-container {
+            display: flex;
+            justify-content: space-between; /* จัดให้อยู่ด้านขวา */
+            align-items: center;
+            margin-bottom: 5px; /* ปรับขอบล่าง */
+        }
+        #container {
+            width: 100%;
+            height: 100vh;
+            overflow: auto;
+            border: 1px solid black;
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div class="download-container">       
+            <h2>Get file now.</h2>
+            <p>Choose Image or File to Show.</p>
+            <div class="app-buttons" style="text-align: center;">
+                <button id="imageButton" class="app-button">
+                    Get Image
+                </button>
+                <button id="fileButton" class="app-button">
+                    Get File
+                </button>
+            </div> 
+        </div>
+        <div id="fileContainer" class="data-container hidden"></div>
+
+        <div id="imageContainer" class="data-container hidden"></div>
+
+        <iframe id="pdf" scr="" width="100%" height="500"></iframe>
+    
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getStorage, ref, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCDhXc5YbUEUoMtr-ThagV-jr8xzv6lxS8",
+            authDomain: "cloudwireless-9f89a.firebaseapp.com",
+            projectId: "cloudwireless-9f89a",
+            storageBucket: "cloudwireless-9f89a.appspot.com",
+            messagingSenderId: "1004514098764",
+            appId: "1:1004514098764:web:afc7d3705a1e9f7aa6fee9",
+            measurementId: "G-1F52Z76G4J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+        const fileButton = document.getElementById("fileButton");
+        const imageButton = document.getElementById("imageButton");
+        const fileContainer = document.getElementById("fileContainer");
+        const imageContainer = document.getElementById("imageContainer");
+        const pdf = document.getElementById("pdf")
+
+        const serverIp = "<%= serverIp %>";
+        console.log(serverIp)
+        const socket = io("http://"+serverIp+":3000/");
+
+        let isImageShown = false;
+        let isFileShown = false;
+        let isViewShown = false;
+
+        socket.emit('file',{clicked:!isFileShown})
+
+        function handlefileClick() {
+
+            socket.emit('fileButtonClick', { clicked: !isFileShown });
+          
+            if (!isFileShown) {
+                listAll(ref(storage, 'files')).then((res) => {
+                    fileContainer.innerHTML = ''; 
+                    res.items.forEach((itemRef) => {
+                        getDownloadURL(itemRef).then((url) => {
+
+                            const link = document.createElement('a');
+                            link.href = url;
+                            link.innerText = itemRef.name;
+                            link.download = itemRef.name;
+        
+                            const linkContainer = document.createElement('div');
+                            linkContainer.classList.add('link-container');
+        
+                            const viewButton = document.createElement('button');
+                            viewButton.innerText = 'View';
+                            viewButton.className = 'view-button'; 
+                            var iframe = document.getElementById('pdf');
+                            viewButton.onclick = function () {
+                                
+                                socket.emit('pdf',{clicked: !isViewShown,url: url})
+                                iframe.src = url
+                                pdf.src = url
+                            };
+        
+                            linkContainer.appendChild(link);
+                            linkContainer.appendChild(viewButton);
+        
+                            fileContainer.appendChild(linkContainer);
+                            fileContainer.appendChild(document.createElement('br'));
+                        }).catch((error) => {
+                            console.error('Error getting download URL for', itemRef.name, ':', error);
+                        });
+                    });
+                }).catch((error) => {
+                    console.error('Error listing files:', error);
+                });
+
+        
+
+                fileContainer.classList.remove('hidden');
+                fileContainer.classList.add('active'); 
+                imageContainer.classList.add('hidden');
+                isFileShown = true;
+                isImageShown = false;
+            } else {
+
+                fileContainer.innerHTML = '';
+                fileContainer.classList.remove('active');
+                fileContainer.classList.add('hidden');
+                isFileShown = false;
+            }
+            // Hide image container
+            imageContainer.classList.add('hidden');
+
+        }
+
+        fileButton.addEventListener('click', handlefileClick);
+        
+        socket.emit('image',{clicked:!isImageShown})
+
+        function handleClick() {
+            socket.emit('click', { clicked: !isImageShown }); // Toggle button state
+        
+            if (!isImageShown) {
+                listAll(ref(storage, 'images')).then((res) => {
+                    imageContainer.innerHTML = '';
+                    res.items.forEach((itemRef) => {
+                        getDownloadURL(itemRef).then((url) => {
+                            const img = document.createElement('img');
+                            img.src = url;
+                            imageContainer.appendChild(img);
+                        }).catch((error) => {
+                            console.error('Error getting download URL for', itemRef.name, ':', error);
+                        });
+                    });
+                }).catch((error) => {
+                    console.error('Error listing images:', error);
+                });
+                imageContainer.classList.remove('hidden');
+                fileContainer.classList.add('hidden');
+                isImageShown = true;
+            } else {
+                imageContainer.innerHTML = '';
+                imageContainer.classList.add('hidden');
+                isImageShown = false;
+            }
+            fileContainer.classList.remove('active');
+            fileContainer.classList.add('hidden');
+        }
+
+        imageButton.addEventListener('click', handleClick );
+
+
+        const container = document.getElementById('container');
+        container.addEventListener('scroll', function() {
+            const scrollTop = container.scrollTop;
+            const scrollDown = container.scrollDown;
+
+            socket.emit('scroll', { scrollTop, scrollDown });
+        });
+
+        socket.on('scroll', function(data) {
+            container.scrollTop = data.scrollTop;
+            container.scrollDown = data.scrollDown;
+        });
+        socket.on('click', function (data) {
+            if (data.clicked !== isImageShown) {
+                imageButton.click();
+            }
+        });
+        socket.on('fileButtonClick', function (data) {
+            if (data.clicked !== isFileShown) {
+                fileButton.click();
+            }
+        });
+    </script>
+</body>
+
+</html>
